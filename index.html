@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Education — CSS text-transform | Grade 7</title>
+
+<!-- ============================================================
+  FIREBASE SETUP INSTRUCTIONS
+  ===============================================================
+  1. Go to https://console.firebase.google.com
+  2. Click "Add project" → name it e.g. "css-lesson-grade7"
+  3. After project creation, click the </> (Web) icon to add a web app
+  4. Register app (no need to set up Hosting)
+  5. Copy the firebaseConfig object shown and REPLACE the placeholder
+     object in the FIREBASE CONFIG section below (~line 650)
+  6. In the Firebase Console:
+     → Build → Realtime Database → Create Database
+     → Start in TEST MODE (for school use, rules allow read/write)
+     → The database URL will look like:
+        https://your-project-default-rtdb.firebaseio.com
+  7. Paste that URL as the "databaseURL" value in firebaseConfig
+  8. Upload/host this single HTML file on GitHub Pages or any server
+  9. Share the URL with students
+  10. You open the same URL → click "I am the Teacher" to enter Teacher Mode
+  ============================================================ -->
+
+<style>
+/* =====================================================
+   DESIGN SYSTEM — "Code Terminal" meets school energy
+   Palette: deep navy bg, electric violet accent,
+   warm amber for teacher, mint green for success,
+   rose for locked. Signature: a live text-transform
+   preview that pulses whenever the teacher unlocks a
+   new section (the one moment of drama in an otherwise
+   disciplined layout).
+   ===================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:      #07090F;
+  --surf:    #0E1420;
+  --card:    #131B2E;
+  --bdr:     #1C2B45;
+  --bdr2:    #243550;
+  --violet:  #7C3AED;
+  --violet2: #A78BFA;
+  --neon:    #06FFA5;
+  --amber:   #F59E0B;
+  --amber2:  #FDE68A;
+  --rose:    #F43F5E;
+  --sky:     #38BDF8;
+  --green:   #10B981;
+  --text:    #E2E8F0;
+  --muted:   #64748B;
+  --muted2:  #94A3B8;
+  --r:       14px;
+  --r2:      20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Subtle grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 920px; margin: 0 auto; padding: 20px 16px 80px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, #0D1525 0%, #12203D 100%);
+  border: 1px solid var(--bdr); border-radius: 24px;
+  padding: 48px 32px 40px; text-align: center; margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 300px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: var(--violet2); letter-spacing: 3px; text-transform: uppercase;
+  background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 50px; padding: 5px 14px; margin-bottom: 18px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.9rem, 5.5vw, 3rem);
+  color: #fff; line-height: 1.1; margin-bottom: 14px;
+}
+.hero h1 em { font-style: normal; color: var(--violet2); }
+/* The signature: live transform preview in hero */
+.hero-demo {
+  display: inline-block; margin: 16px auto 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 1.5rem;
+  font-weight: 600; color: var(--neon);
+  transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  letter-spacing: 1px;
+}
+.hero-demo.pulse { animation: heroPulse 0.6s ease; }
+@keyframes heroPulse {
+  0%   { opacity: 0; transform: scale(0.88) translateY(8px); }
+  60%  { opacity: 1; transform: scale(1.04) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.hero p.sub { color: var(--muted2); font-size: 0.92rem; margin-top: 8px; }
+
+/* Connection status bar */
+.conn-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surf); border: 1px solid var(--bdr);
+  border-radius: var(--r); padding: 10px 16px; margin-bottom: 20px;
+  font-size: 0.82rem; gap: 10px; flex-wrap: wrap;
+}
+.conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; margin-right: 6px; flex-shrink: 0; }
+.conn-dot.live { background: var(--neon); box-shadow: 0 0 8px var(--neon); animation: blink 1.8s ease infinite; }
+.conn-dot.err  { background: var(--rose); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.conn-mode {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  padding: 3px 10px; border-radius: 50px; font-weight: 600;
+}
+.conn-mode.teacher { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.conn-mode.student { background: rgba(124,58,237,0.12); color: var(--violet2); border: 1px solid rgba(124,58,237,0.25); }
+
+/* ===== MODE SELECT ===== */
+.mode-select {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: var(--r2); padding: 32px 28px; margin-bottom: 24px;
+}
+.mode-select h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: #fff; margin-bottom: 8px; }
+.mode-select p  { color: var(--muted2); font-size: 0.9rem; margin-bottom: 22px; }
+.mode-cards { display: flex; gap: 14px; flex-wrap: wrap; }
+.mode-card {
+  flex: 1; min-width: 200px; padding: 22px 20px; border-radius: var(--r);
+  border: 2px solid var(--bdr); background: var(--bg);
+  cursor: pointer; transition: all 0.22s; text-align: center;
+}
+.mode-card:hover { border-color: var(--violet); transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,0.18); }
+.mode-card .mc-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.mode-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; color: #fff; margin-bottom: 6px; }
+.mode-card p  { font-size: 0.8rem; color: var(--muted); }
+.mode-card.teacher-card { border-color: rgba(245,158,11,0.3); }
+.mode-card.teacher-card:hover { border-color: var(--amber); box-shadow: 0 8px 28px rgba(245,158,11,0.18); }
+
+/* ===== PASSWORD MODAL ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 9998;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: var(--card); border: 1px solid var(--bdr2);
+  border-radius: 22px; padding: 36px 30px; max-width: 380px; width: 90%;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5); text-align: center;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.9) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-box .m-icon { font-size: 2.4rem; margin-bottom: 10px; }
+.modal-box h3 { font-family: 'Syne', sans-serif; color: #fff; font-size: 1.15rem; margin-bottom: 6px; }
+.modal-box p  { color: var(--muted); font-size: 0.84rem; margin-bottom: 20px; }
+.modal-input {
+  width: 100%; padding: 12px 14px; margin-bottom: 10px;
+  background: var(--bg); border: 1.5px solid var(--bdr2);
+  border-radius: 10px; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem;
+  transition: border-color 0.2s;
+}
+.modal-input:focus { outline: none; border-color: var(--amber); }
+.modal-err { color: var(--rose); font-size: 0.8rem; min-height: 18px; margin-bottom: 10px; font-weight: 600; }
+.modal-btns { display: flex; gap: 10px; justify-content: center; }
+
+/* ===== FORMS / INPUTS ===== */
+.field-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.field { flex: 1; min-width: 200px; }
+.field label {
+  display: block; font-size: 0.75rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px;
+}
+.field input, .field select {
+  width: 100%; padding: 12px 14px;
+  background: var(--bg); border: 1.5px solid var(--bdr2);
+  border-radius: 10px; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.field input:focus, .field select:focus {
+  outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  border: none; padding: 11px 22px; border-radius: 50px;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
+  cursor: pointer; transition: all 0.18s; white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn-violet { background: var(--violet); color: #fff; box-shadow: 0 4px 16px rgba(124,58,237,0.3); }
+.btn-violet:hover { box-shadow: 0 8px 28px rgba(124,58,237,0.45); }
+.btn-neon   { background: var(--neon); color: #07090F; box-shadow: 0 4px 14px rgba(6,255,165,0.25); }
+.btn-neon:hover { box-shadow: 0 8px 24px rgba(6,255,165,0.4); }
+.btn-amber  { background: var(--amber); color: #07090F; box-shadow: 0 4px 14px rgba(245,158,11,0.3); }
+.btn-amber:hover { box-shadow: 0 8px 24px rgba(245,158,11,0.45); }
+.btn-rose   { background: var(--rose); color: #fff; box-shadow: 0 4px 14px rgba(244,63,94,0.3); }
+.btn-ghost  { background: var(--card); color: var(--text); border: 1.5px solid var(--bdr2); }
+.btn-ghost:hover { border-color: var(--violet2); color: var(--violet2); }
+.btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-radius: var(--r2); margin-bottom: 20px; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.card.unlocked { border-color: rgba(124,58,237,0.3); }
+
+.card-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; border-bottom: 1px solid var(--bdr);
+}
+.sec-badge {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600;
+  flex-shrink: 0;
+}
+.badge-s { background: rgba(124,58,237,0.14); color: var(--violet2); border: 1px solid rgba(124,58,237,0.3); }
+.badge-i { background: rgba(6,255,165,0.1); color: var(--neon); border: 1px solid rgba(6,255,165,0.25); }
+.badge-m { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.badge-p { background: rgba(244,63,94,0.1); color: var(--rose); border: 1px solid rgba(244,63,94,0.3); }
+
+.card-title { font-family: 'Syne', sans-serif; font-size: 1rem; color: #fff; }
+.card-sub   { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+.lock-chip {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 50px; padding: 4px 11px; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.5px; flex-shrink: 0;
+}
+.chip-locked   { background: rgba(244,63,94,0.1); color: var(--rose); border: 1px solid rgba(244,63,94,0.25); }
+.chip-unlocked { background: rgba(6,255,165,0.1); color: var(--neon); border: 1px solid rgba(6,255,165,0.25); }
+
+.card-body { padding: 22px; }
+
+/* Locked notice */
+.locked-notice {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(244,63,94,0.04); border: 1px dashed rgba(244,63,94,0.2);
+  border-radius: 12px; padding: 18px 20px; color: var(--muted2); font-size: 0.9rem;
+}
+.locked-notice .ln-icon { font-size: 1.8rem; flex-shrink: 0; animation: wobble 2.5s ease infinite; }
+@keyframes wobble { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
+
+/* ===== PROGRESS TRACKER ===== */
+.progress-bar-wrap {
+  background: var(--surf); border: 1px solid var(--bdr);
+  border-radius: 50px; height: 10px; margin: 12px 0 4px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--violet), var(--neon));
+  border-radius: 50px; transition: width 0.5s ease;
+  width: 0%;
+}
+.progress-steps {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 22px;
+}
+.prog-step {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--card); border: 1.5px solid var(--bdr);
+  border-radius: 50px; padding: 6px 14px;
+  font-size: 0.75rem; font-weight: 600; color: var(--muted);
+  transition: all 0.3s;
+}
+.prog-step.active { border-color: var(--violet2); color: var(--violet2); background: rgba(124,58,237,0.08); }
+.prog-step.done   { border-color: var(--green); color: var(--green); background: rgba(16,185,129,0.08); }
+.prog-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ===== CONTENT STYLES ===== */
+.topic-box {
+  background: rgba(124,58,237,0.06); border-left: 3px solid var(--violet);
+  border-radius: 0 12px 12px 0; padding: 16px 18px; margin-bottom: 20px;
+  font-size: 0.93rem; color: var(--muted2); line-height: 1.75;
+}
+.topic-box strong { color: var(--violet2); }
+
+.h3 {
+  font-family: 'Syne', sans-serif; font-size: 0.92rem;
+  color: var(--neon); text-transform: uppercase; letter-spacing: 1.5px;
+  margin: 22px 0 12px;
+}
+
+.syntax-block {
+  background: #060A12; border: 1px solid var(--bdr2); border-radius: 12px;
+  padding: 18px 20px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.83rem; line-height: 1.9; overflow-x: auto; margin: 12px 0 20px;
+}
+.syntax-block pre { margin: 0; }
+.sy-sel  { color: #38BDF8; }
+.sy-prop { color: #A78BFA; }
+.sy-val  { color: #F59E0B; }
+.sy-punc { color: #475569; }
+.sy-cmt  { color: #334D63; font-style: italic; }
+
+/* Transform showcase cards */
+.tf-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(190px,1fr)); gap: 12px; margin: 16px 0; }
+.tf-card {
+  background: var(--bg); border: 1px solid var(--bdr2); border-radius: 14px;
+  padding: 18px 16px; transition: transform 0.2s;
+}
+.tf-card:hover { transform: translateY(-3px); }
+.tf-top-bar { height: 3px; border-radius: 2px; margin-bottom: 14px; }
+.bar-grey   { background: var(--muted); }
+.bar-sky    { background: var(--sky); }
+.bar-neon   { background: var(--neon); }
+.bar-violet { background: var(--violet2); }
+.tf-chip {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  color: var(--amber); background: rgba(245,158,11,0.1);
+  border-radius: 5px; padding: 2px 8px; display: inline-block; margin-bottom: 10px;
+}
+.tf-before { font-size: 0.73rem; color: var(--muted); margin-bottom: 3px; }
+.tf-after  { font-family: 'Syne', sans-serif; font-size: 1.05rem; color: #fff; font-weight: 700; margin-bottom: 9px; }
+.tf-none       { text-transform: none; }
+.tf-capitalize { text-transform: capitalize; }
+.tf-uppercase  { text-transform: uppercase; }
+.tf-lowercase  { text-transform: lowercase; }
+.tf-desc { font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--bdr); padding-top: 9px; }
+
+/* Live demo */
+.demo-zone {
+  background: var(--bg); border: 1px solid var(--violet);
+  border-radius: 16px; padding: 20px; margin: 18px 0;
+  box-shadow: 0 0 30px rgba(124,58,237,0.08);
+}
+.demo-zone .dz-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--violet2); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pill {
+  padding: 6px 14px; border-radius: 50px;
+  border: 1.5px solid var(--bdr2); background: var(--card); color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  cursor: pointer; transition: all 0.18s;
+}
+.pill:hover { border-color: var(--violet2); color: var(--violet2); }
+.pill.on { background: var(--violet); color: #fff; border-color: var(--violet); }
+.demo-out {
+  background: #fff; color: #111; border-radius: 10px;
+  padding: 16px 20px; font-size: 1.25rem; font-weight: 600;
+  min-height: 58px; transition: text-transform 0.3s; text-align: center;
+  line-height: 1.5;
+}
+.demo-inp { margin-top: 12px; }
+.demo-inp input {
+  width: 100%; padding: 10px 14px;
+  background: var(--card); border: 1.5px solid var(--bdr2);
+  border-radius: 10px; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.93rem;
+}
+.demo-inp input:focus { outline: none; border-color: var(--violet); }
+
+/* ===== QUIZ STYLES ===== */
+.quiz-q + .quiz-q { margin-top: 24px; }
+.q-num-label { font-size: 0.72rem; font-weight: 700; color: var(--violet2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+.q-text { font-size: 0.97rem; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px; border-radius: 11px; cursor: pointer;
+  border: 1.5px solid var(--bdr2); background: var(--bg); font-size: 0.9rem;
+  transition: all 0.18s; font-weight: 500;
+}
+.opt:hover { border-color: var(--violet); background: rgba(124,58,237,0.05); }
+.opt input[type=radio] { accent-color: var(--violet); width: 16px; height: 16px; flex-shrink: 0; }
+.opt.correct { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+.opt.wrong   { background: rgba(244,63,94,0.1); border-color: var(--rose); color: var(--rose); }
+
+.fb-box {
+  border-radius: 11px; padding: 13px 16px; font-size: 0.88rem; font-weight: 600;
+  margin-top: 16px; display: none;
+}
+.fb-box.show { display: block; }
+.fb-pass { background: rgba(16,185,129,0.1); border: 1px solid var(--green); color: var(--green); }
+.fb-fail { background: rgba(244,63,94,0.1); border: 1px solid var(--rose); color: var(--rose); }
+.fb-info { background: rgba(124,58,237,0.1); border: 1px solid var(--violet2); color: var(--violet2); }
+
+.score-pill-big {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--bg); border: 1px solid var(--bdr2);
+  border-radius: 14px; padding: 14px 20px; margin-top: 16px;
+}
+.spb-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; }
+.spb-lbl { font-size: 0.8rem; color: var(--muted); }
+
+/* ===== TASKS ===== */
+.task-block { border-radius: 16px; padding: 20px 22px; margin-bottom: 16px; border: 1px solid; }
+.task-s  { border-color: rgba(16,185,129,0.25);  background: rgba(16,185,129,0.03); }
+.task-c  { border-color: rgba(245,158,11,0.25);  background: rgba(245,158,11,0.03); }
+.task-ch { border-color: rgba(56,189,248,0.25);  background: rgba(56,189,248,0.03); }
+
+.task-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 50px; padding: 4px 12px; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.5px; margin-bottom: 12px;
+}
+.ttag-s  { background: rgba(16,185,129,0.14); color: var(--green); }
+.ttag-c  { background: rgba(245,158,11,0.14); color: var(--amber); }
+.ttag-ch { background: rgba(56,189,248,0.14); color: var(--sky); }
+
+.task-block h4 { font-family: 'Syne', sans-serif; font-size: 0.97rem; color: #fff; margin-bottom: 10px; }
+.task-block p  { font-size: 0.88rem; color: var(--muted2); line-height: 1.7; }
+
+.code-blk {
+  background: #060A12; border: 1px solid var(--bdr2); border-radius: 11px;
+  padding: 16px 18px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; line-height: 1.9; overflow-x: auto; margin: 12px 0;
+  white-space: pre;
+}
+.ht  { color: #38BDF8; }
+.att { color: #A78BFA; }
+.val { color: #F59E0B; }
+.css-p { color: #A78BFA; }
+.css-v { color: #F59E0B; }
+
+.step-list { list-style: none; padding: 0; margin: 10px 0; }
+.step-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid rgba(28,43,69,0.6);
+  font-size: 0.86rem; color: var(--muted2);
+}
+.step-list li:last-child { border-bottom: none; }
+.sn {
+  min-width: 22px; height: 22px; border-radius: 6px;
+  background: rgba(6,255,165,0.1); color: var(--neon);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+}
+
+.exp-output {
+  background: #fff; color: #111; border-radius: 10px;
+  padding: 14px 18px; margin-top: 10px;
+  border: 2px dashed #ccc; font-family: Arial, sans-serif;
+}
+.out-lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+/* Lab instruction box */
+.lab-box {
+  background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 14px; padding: 18px 20px; margin-bottom: 20px;
+}
+.lab-box h4 { font-family: 'Syne', sans-serif; color: var(--amber); font-size: 0.85rem; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+/* ===== PLENARY ===== */
+.ple-q { margin-bottom: 20px; }
+.ple-q label { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.ple-q textarea {
+  width: 100%; padding: 12px 14px; border-radius: 11px;
+  background: var(--bg); border: 1.5px solid var(--bdr2); color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem;
+  resize: vertical; min-height: 90px; transition: border-color 0.2s;
+}
+.ple-q textarea:focus { outline: none; border-color: var(--rose); }
+
+/* ===== TEACHER PANEL ===== */
+.teacher-panel {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 3px solid var(--amber); border-radius: var(--r2);
+  padding: 26px 24px; margin-bottom: 24px; display: none;
+}
+.teacher-panel h2 { font-family: 'Syne', sans-serif; color: var(--amber); font-size: 1.1rem; margin-bottom: 4px; }
+.teacher-panel .tp-sub { color: var(--muted); font-size: 0.82rem; margin-bottom: 20px; }
+
+.ctrl-grid {
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(210px,1fr)); gap: 12px;
+  margin-bottom: 20px;
+}
+.ctrl-row {
+  background: var(--bg); border: 1px solid var(--bdr2);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.ctrl-label {
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--muted2); display: flex; align-items: center; gap: 6px;
+}
+.ctrl-btns { display: flex; gap: 8px; }
+.ctrl-status {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  padding: 3px 8px; border-radius: 5px; display: inline-block;
+  background: rgba(244,63,94,0.1); color: var(--rose);
+}
+.ctrl-status.on { background: rgba(6,255,165,0.1); color: var(--neon); }
+
+.tp-divider { border: none; border-top: 1px solid var(--bdr); margin: 18px 0; }
+
+/* Teacher responses table */
+.resp-table-wrap { overflow-x: auto; margin-top: 14px; }
+.resp-table {
+  width: 100%; border-collapse: collapse; font-size: 0.82rem;
+}
+.resp-table th {
+  background: rgba(245,158,11,0.1); color: var(--amber);
+  padding: 10px 12px; text-align: left; font-weight: 700;
+  border-bottom: 1px solid var(--bdr2); white-space: nowrap;
+}
+.resp-table td {
+  padding: 9px 12px; border-bottom: 1px solid var(--bdr); color: var(--muted2);
+  vertical-align: top;
+}
+.resp-table tr:hover td { background: rgba(124,58,237,0.04); }
+.sc-badge {
+  display: inline-block; padding: 2px 9px; border-radius: 50px;
+  font-size: 0.75rem; font-weight: 700;
+}
+.sc-good { background: rgba(16,185,129,0.12); color: var(--green); }
+.sc-ok   { background: rgba(245,158,11,0.12); color: var(--amber); }
+.sc-low  { background: rgba(244,63,94,0.12);  color: var(--rose); }
+.no-data { color: var(--muted); text-align: center; padding: 24px; font-size: 0.9rem; }
+
+/* Toast notifications */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: var(--card); border: 1px solid var(--bdr2);
+  border-radius: 12px; padding: 13px 18px;
+  font-size: 0.85rem; font-weight: 600; color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: toastIn 0.3s ease, toastOut 0.4s ease 3.6s forwards;
+  max-width: 300px;
+}
+.toast.success { border-left: 3px solid var(--neon); }
+.toast.error   { border-left: 3px solid var(--rose); }
+.toast.info    { border-left: 3px solid var(--violet2); }
+@keyframes toastIn  { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateX(20px)} }
+
+/* Login card */
+.login-card {
+  background: var(--card); border: 1px solid var(--bdr);
+  border-top: 3px solid var(--violet); border-radius: var(--r2);
+  padding: 28px; margin-bottom: 24px;
+}
+.login-card h2 { font-family: 'Syne', sans-serif; font-size: 1.15rem; color: var(--violet2); margin-bottom: 6px; }
+.login-card p  { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+/* Section unlock pulse */
+@keyframes unlockFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(6,255,165,0.5); }
+  70%  { box-shadow: 0 0 0 14px rgba(6,255,165,0); }
+  100% { box-shadow: 0 0 0 0 rgba(6,255,165,0); }
+}
+.just-unlocked { animation: unlockFlash 0.9s ease; }
+
+/* Info banner */
+.info-banner {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 50px; padding: 6px 14px;
+  font-size: 0.78rem; color: var(--violet2); margin-bottom: 16px;
+}
+
+/* Submitted overlay */
+.submitted-msg {
+  background: rgba(16,185,129,0.08); border: 1px solid var(--green);
+  border-radius: 12px; padding: 16px 20px; color: var(--green);
+  font-weight: 600; font-size: 0.92rem; display: none;
+}
+.submitted-msg.show { display: block; }
+
+/* Export btn */
+.export-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media(max-width:600px) {
+  .tf-grid { grid-template-columns: 1fr 1fr; }
+  .ctrl-grid { grid-template-columns: 1fr 1fr; }
+  .mode-cards { flex-direction: column; }
+  .hero { padding: 32px 18px 28px; }
+  .card-body, .teacher-panel { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-tag">📚 Work Education · Grade 7 · Live Classroom</div>
+  <h1>Welcome to <em>Work Education</em></h1>
+  <div class="hero-demo" id="heroDemo">welcome to work education</div>
+  <p class="sub">Today's Topic: CSS text-transform Property &nbsp;·&nbsp; Real-time lesson 🎛️</p>
+</div>
+
+<!-- ===== CONNECTION BAR ===== -->
+<div class="conn-bar" id="connBar">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <span class="conn-dot" id="connDot"></span>
+    <span id="connText" style="color:var(--muted)">Connecting to Firebase…</span>
+  </div>
+  <span class="conn-mode" id="modeChip" style="display:none"></span>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- ===== TEACHER PASSWORD MODAL ===== -->
+<div class="modal-overlay" id="teacherModal">
+  <div class="modal-box">
+    <div class="m-icon">👩‍🏫</div>
+    <h3>Teacher Access</h3>
+    <p>Enter the teacher password to open the control panel.</p>
+    <input class="modal-input" type="password" id="tPwd" placeholder="Password" onkeydown="if(event.key==='Enter')checkPwd()">
+    <div class="modal-err" id="pwdErr"></div>
+    <div class="modal-btns">
+      <button class="btn btn-amber" onclick="checkPwd()">🔓 Unlock</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODE SELECTION ===== -->
+<div class="mode-select" id="modeSelect">
+  <h2>Who are you?</h2>
+  <p>Choose your role. Students and teacher share the same link — sections unlock for everyone simultaneously.</p>
+  <div class="mode-cards">
+    <div class="mode-card" onclick="enterStudentMode()">
+      <div class="mc-icon">🎒</div>
+      <h3>I am a Student</h3>
+      <p>Enter your name and class to begin. Activities unlock when your teacher is ready.</p>
+    </div>
+    <div class="mode-card teacher-card" onclick="openTeacherModal()">
+      <div class="mc-icon">🎛️</div>
+      <h3>I am the Teacher</h3>
+      <p>Enter the teacher password to access the control panel and manage activities.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STUDENT LOGIN ===== -->
+<div class="login-card" id="loginCard" style="display:none">
+  <h2>⚡ Enter Your Details</h2>
+  <p>Fill in your name, class and division, then click Start.</p>
+  <div class="field-row">
+    <div class="field">
+      <label>Your Full Name</label>
+      <input type="text" id="stName" placeholder="e.g. Fatima Al Nuaimi">
+    </div>
+    <div class="field">
+      <label>Class / Section</label>
+      <input type="text" id="stClass" placeholder="e.g. 7A">
+    </div>
+    <div class="field">
+      <label>Division</label>
+      <input type="text" id="stDiv" placeholder="e.g. A or B">
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-violet" onclick="startStudent()">▶ Start Lesson</button>
+  </div>
+  <div class="modal-err" id="loginErr" style="margin-top:10px"></div>
+</div>
+
+<!-- ===== TEACHER PANEL ===== -->
+<div class="teacher-panel" id="teacherPanel">
+  <h2>🎛️ Teacher Control Panel</h2>
+  <div class="tp-sub">Click to unlock or lock each lesson section. Changes apply instantly for all connected students.</div>
+
+  <div class="ctrl-grid">
+    <div class="ctrl-row">
+      <div class="ctrl-label">🟣 Starter Activity <span class="ctrl-status" id="cs-starter">LOCKED</span></div>
+      <div class="ctrl-btns">
+        <button class="btn btn-neon btn-sm" onclick="setLock('starter',false)">🔓 Unlock</button>
+        <button class="btn btn-rose btn-sm" onclick="setLock('starter',true)">🔒 Lock</button>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-label">🟢 Introduction <span class="ctrl-status" id="cs-intro">LOCKED</span></div>
+      <div class="ctrl-btns">
+        <button class="btn btn-neon btn-sm" onclick="setLock('intro',false)">🔓 Unlock</button>
+        <button class="btn btn-rose btn-sm" onclick="setLock('intro',true)">🔒 Lock</button>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-label">🟡 Main Activity <span class="ctrl-status" id="cs-main">LOCKED</span></div>
+      <div class="ctrl-btns">
+        <button class="btn btn-neon btn-sm" onclick="setLock('main',false)">🔓 Unlock</button>
+        <button class="btn btn-rose btn-sm" onclick="setLock('main',true)">🔒 Lock</button>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-label">🔴 Plenary <span class="ctrl-status" id="cs-plenary">LOCKED</span></div>
+      <div class="ctrl-btns">
+        <button class="btn btn-neon btn-sm" onclick="setLock('plenary',false)">🔓 Unlock</button>
+        <button class="btn btn-rose btn-sm" onclick="setLock('plenary',true)">🔒 Lock</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="tp-divider">
+  <div style="font-family:'Syne',sans-serif;color:var(--amber);font-size:0.9rem;margin-bottom:14px;">📋 Student Responses</div>
+
+  <!-- Starter responses -->
+  <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Starter Activity</div>
+  <div class="resp-table-wrap"><table class="resp-table" id="tbl-starter"><tr><td class="no-data">No responses yet.</td></tr></table></div>
+
+  <hr class="tp-divider">
+  <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Plenary Responses</div>
+  <div class="resp-table-wrap"><table class="resp-table" id="tbl-plenary"><tr><td class="no-data">No responses yet.</td></tr></table></div>
+
+  <div class="export-row">
+    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn btn-ghost btn-sm" onclick="clearResponses()">🗑 Clear All Responses</button>
+  </div>
+</div>
+
+<!-- ===== PROGRESS TRACKER ===== -->
+<div class="progress-steps" id="progressSteps" style="display:none">
+  <div class="prog-step" id="ps-starter"><span class="prog-dot"></span>Starter</div>
+  <div style="color:var(--bdr2);font-size:0.8rem;align-self:center">›</div>
+  <div class="prog-step" id="ps-intro"><span class="prog-dot"></span>Introduction</div>
+  <div style="color:var(--bdr2);font-size:0.8rem;align-self:center">›</div>
+  <div class="prog-step" id="ps-main"><span class="prog-dot"></span>Main Activity</div>
+  <div style="color:var(--bdr2);font-size:0.8rem;align-self:center">›</div>
+  <div class="prog-step" id="ps-plenary"><span class="prog-dot"></span>Plenary</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: STARTER                                           -->
+<!-- ============================================================ -->
+<div class="card" id="card-starter">
+  <div class="card-header">
+    <div class="sec-badge badge-s">01</div>
+    <div>
+      <div class="card-title">Starter Activity</div>
+      <div class="card-sub">Quick recall — 2 multiple choice questions</div>
+    </div>
+    <div class="lock-chip chip-locked" id="chip-starter">🔒 Locked</div>
+  </div>
+  <div class="card-body" id="body-starter">
+    <div class="locked-notice" id="ln-starter">
+      <span class="ln-icon">🔒</span>
+      <span><strong>Waiting for your teacher</strong> to unlock this activity. Sit tight!</span>
+    </div>
+    <div id="cnt-starter" style="display:none">
+      <div class="info-banner">💡 Answer both questions, then click Submit. You can only submit once.</div>
+
+      <!-- Q1 -->
+      <div class="quiz-q">
+        <div class="q-num-label">Question 1 of 2</div>
+        <div class="q-text">Which HTML tag is used to create a paragraph?</div>
+        <div class="opts" id="sq1">
+          <label class="opt"><input type="radio" name="sq1" value="a">&lt;h1&gt;</label>
+          <label class="opt"><input type="radio" name="sq1" value="b">&lt;p&gt;</label>
+          <label class="opt"><input type="radio" name="sq1" value="c">&lt;body&gt;</label>
+          <label class="opt"><input type="radio" name="sq1" value="d">&lt;title&gt;</label>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-q" style="margin-top:22px">
+        <div class="q-num-label">Question 2 of 2</div>
+        <div class="q-text">Which language is used to <strong>style</strong> an HTML webpage?</div>
+        <div class="opts" id="sq2">
+          <label class="opt"><input type="radio" name="sq2" value="a">HTML</label>
+          <label class="opt"><input type="radio" name="sq2" value="b">CSS</label>
+          <label class="opt"><input type="radio" name="sq2" value="c">Scratch</label>
+          <label class="opt"><input type="radio" name="sq2" value="d">Python</label>
+        </div>
+      </div>
+
+      <div class="fb-box" id="fb-starter"></div>
+      <div class="score-pill-big" id="spb-starter" style="display:none">
+        <div><div class="spb-num" id="spb-starter-num" style="color:var(--neon)">—</div><div class="spb-lbl">Your Score</div></div>
+        <div style="color:var(--muted);font-size:0.83rem" id="spb-starter-msg"></div>
+      </div>
+
+      <div class="btn-row" id="btnrow-starter">
+        <button class="btn btn-violet" onclick="submitStarter()">✔ Submit Answers</button>
+      </div>
+      <div class="submitted-msg" id="done-starter">✅ Your answers have been submitted! Well done.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: INTRODUCTION                                      -->
+<!-- ============================================================ -->
+<div class="card" id="card-intro">
+  <div class="card-header">
+    <div class="sec-badge badge-i">02</div>
+    <div>
+      <div class="card-title">Introduction — CSS text-transform</div>
+      <div class="card-sub">What it is, why it matters, and how it works</div>
+    </div>
+    <div class="lock-chip chip-locked" id="chip-intro">🔒 Locked</div>
+  </div>
+  <div class="card-body" id="body-intro">
+    <div class="locked-notice" id="ln-intro">
+      <span class="ln-icon">🔒</span>
+      <span><strong>Waiting for your teacher</strong> to unlock this activity. Sit tight!</span>
+    </div>
+    <div id="cnt-intro" style="display:none">
+
+      <div class="topic-box">
+        The <strong>text-transform</strong> CSS property lets you control the capitalisation of text — making it ALL CAPS, all lowercase, or Capitalized — <em>without changing the actual HTML content</em>. Web developers use it to style headings, navigation links, and buttons consistently.
+      </div>
+
+      <div class="h3">📐 Syntax</div>
+      <div class="syntax-block"><pre><span class="sy-sel">selector</span> <span class="sy-punc">{</span>
+    <span class="sy-prop">text-transform</span><span class="sy-punc">:</span> <span class="sy-val">value</span><span class="sy-punc">;</span>
+<span class="sy-punc">}</span>
+
+<span class="sy-cmt">/* Example */</span>
+<span class="sy-sel">p</span> <span class="sy-punc">{</span>
+    <span class="sy-prop">text-transform</span><span class="sy-punc">:</span> <span class="sy-val">uppercase</span><span class="sy-punc">;</span>
+<span class="sy-punc">}</span></pre></div>
+
+      <div class="h3">🎯 The Four Values</div>
+      <div class="tf-grid">
+        <div class="tf-card">
+          <div class="tf-top-bar bar-grey"></div>
+          <div class="tf-chip">none</div>
+          <div class="tf-before">Input → "Hello World"</div>
+          <div class="tf-after tf-none">Hello World</div>
+          <div class="tf-desc">No change. The browser shows the text exactly as written in HTML.</div>
+        </div>
+        <div class="tf-card">
+          <div class="tf-top-bar bar-sky"></div>
+          <div class="tf-chip">capitalize</div>
+          <div class="tf-before">Input → "hello world"</div>
+          <div class="tf-after tf-capitalize">hello world</div>
+          <div class="tf-desc">The first letter of every word is made capital.</div>
+        </div>
+        <div class="tf-card">
+          <div class="tf-top-bar bar-neon"></div>
+          <div class="tf-chip">uppercase</div>
+          <div class="tf-before">Input → "Hello World"</div>
+          <div class="tf-after tf-uppercase">Hello World</div>
+          <div class="tf-desc">ALL letters become CAPITAL letters.</div>
+        </div>
+        <div class="tf-card">
+          <div class="tf-top-bar bar-violet"></div>
+          <div class="tf-chip">lowercase</div>
+          <div class="tf-before">Input → "HELLO WORLD"</div>
+          <div class="tf-after tf-lowercase">HELLO WORLD</div>
+          <div class="tf-desc">all letters become small letters.</div>
+        </div>
+      </div>
+
+      <div class="h3">⚡ Try It Live</div>
+      <div class="demo-zone">
+        <div class="dz-label">Interactive Demo — type below and choose a value</div>
+        <div class="pill-row">
+          <button class="pill on" onclick="setDemo('none',this)">none</button>
+          <button class="pill" onclick="setDemo('capitalize',this)">capitalize</button>
+          <button class="pill" onclick="setDemo('uppercase',this)">uppercase</button>
+          <button class="pill" onclick="setDemo('lowercase',this)">lowercase</button>
+        </div>
+        <div class="demo-out" id="demoOut">Type something below!</div>
+        <div class="demo-inp"><input type="text" id="demoIn" placeholder="e.g. welcome to UAE 🇦🇪" oninput="updateDemo()"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: MAIN ACTIVITY                                     -->
+<!-- ============================================================ -->
+<div class="card" id="card-main">
+  <div class="card-header">
+    <div class="sec-badge badge-m">03</div>
+    <div>
+      <div class="card-title">Main Activity</div>
+      <div class="card-sub">Apply CSS text-transform in Notepad</div>
+    </div>
+    <div class="lock-chip chip-locked" id="chip-main">🔒 Locked</div>
+  </div>
+  <div class="card-body" id="body-main">
+    <div class="locked-notice" id="ln-main">
+      <span class="ln-icon">🔒</span>
+      <span><strong>Waiting for your teacher</strong> to unlock this activity. Sit tight!</span>
+    </div>
+    <div id="cnt-main" style="display:none">
+
+      <div class="lab-box">
+        <h4>🖥️ Computer Lab Instructions — Follow These Steps First</h4>
+        <ul class="step-list">
+          <li><span class="sn">1</span>Open <strong>Notepad</strong> on your computer.</li>
+          <li><span class="sn">2</span>Type the HTML code given in Task 1 carefully.</li>
+          <li><span class="sn">3</span>Save the file as <strong>texttransform.html</strong></li>
+          <li><span class="sn">4</span>When saving, select <strong>"All Files"</strong> in the Save as type dropdown.</li>
+          <li><span class="sn">5</span>Open the saved file in a <strong>web browser</strong> (e.g. Chrome).</li>
+          <li><span class="sn">6</span>Observe the output and complete the tasks in order.</li>
+        </ul>
+      </div>
+
+      <!-- TASK 1 — SUPPORT -->
+      <div class="task-block task-s">
+        <div class="task-tag ttag-s">🟢 TASK 1 — SUPPORT LEVEL &nbsp;|&nbsp; Everyone Must Complete</div>
+        <h4>Follow the code and observe uppercase</h4>
+        <p>Type the code below exactly into Notepad. Save it, open it in your browser and observe what happens to the paragraph text.</p>
+        <div class="code-blk"><span class="ht">&lt;html&gt;</span>
+<span class="ht">&lt;head&gt;</span>
+  <span class="ht">&lt;title&gt;</span>Text Transform Activity<span class="ht">&lt;/title&gt;</span>
+  <span class="ht">&lt;style&gt;</span>
+    <span class="css-p">p</span> {
+      <span class="css-p">text-transform</span>: <span class="css-v">uppercase</span>;
+    }
+  <span class="ht">&lt;/style&gt;</span>
+<span class="ht">&lt;/head&gt;</span>
+<span class="ht">&lt;body&gt;</span>
+  <span class="ht">&lt;h1&gt;</span>My Web Page<span class="ht">&lt;/h1&gt;</span>
+  <span class="ht">&lt;p&gt;</span>This is my first CSS activity.<span class="ht">&lt;/p&gt;</span>
+<span class="ht">&lt;/body&gt;</span>
+<span class="ht">&lt;/html&gt;</span></div>
+        <div class="out-lbl">✅ Expected Output in Browser</div>
+        <div class="exp-output">
+          <h2 style="font-size:1.3rem">My Web Page</h2>
+          <p style="text-transform:uppercase">This is my first CSS activity.</p>
+        </div>
+      </div>
+
+      <!-- TASK 2 — CORE -->
+      <div class="task-block task-c">
+        <div class="task-tag ttag-c">🟡 TASK 2 — CORE LEVEL</div>
+        <h4>Modify your file — apply different text-transform values</h4>
+        <p>Edit the file you saved in Task 1. Create a page titled <strong>"My Favourite Place"</strong>. Apply the following text-transform values:</p>
+        <ul style="margin:12px 0 0 18px;color:var(--muted2);font-size:0.88rem;line-height:2">
+          <li>Heading <code style="color:var(--amber);font-family:'JetBrains Mono',monospace">&lt;h1&gt;</code> → <strong style="color:var(--neon)">capitalize</strong></li>
+          <li>First paragraph → <strong style="color:var(--neon)">lowercase</strong></li>
+          <li>Second paragraph → <strong style="color:var(--neon)">uppercase</strong></li>
+        </ul>
+        <ul class="step-list" style="margin-top:14px">
+          <li><span class="sn">1</span>Edit the CSS section of your file.</li>
+          <li><span class="sn">2</span>Save the file (Ctrl + S).</li>
+          <li><span class="sn">3</span>Refresh the browser (F5).</li>
+          <li><span class="sn">4</span>Check that each element appears correctly transformed.</li>
+        </ul>
+      </div>
+
+      <!-- TASK 3 — CHALLENGE -->
+      <div class="task-block task-ch">
+        <div class="task-tag ttag-ch">🔵 TASK 3 — CHALLENGE LEVEL &nbsp;|&nbsp; High Achievers</div>
+        <h4>Create a UAE Culture webpage</h4>
+        <p>Create a <strong>new HTML file</strong> on the topic <em>"UAE Culture"</em>. Your page must include:</p>
+        <ul style="margin:12px 0 0 18px;color:var(--muted2);font-size:0.88rem;line-height:2.1">
+          <li>A main heading with <code style="color:var(--amber);font-family:'JetBrains Mono',monospace">text-transform: capitalize</code></li>
+          <li>Three paragraphs using <strong>all three transform values</strong>: uppercase, lowercase, and capitalize</li>
+          <li><strong style="color:var(--sky)">Extra challenge:</strong> Add CSS styling for background colour, font size, and text alignment.</li>
+        </ul>
+        <div style="margin-top:14px;padding:12px 16px;background:rgba(56,189,248,0.07);border:1px solid rgba(56,189,248,0.2);border-radius:10px;font-size:0.83rem;color:var(--muted2)">
+          💡 <strong style="color:var(--sky)">Hint:</strong> Use classes (e.g. <code style="color:var(--amber);font-family:'JetBrains Mono',monospace">.p1 .p2 .p3</code>) in your CSS to apply different styles to each paragraph.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: PLENARY                                           -->
+<!-- ============================================================ -->
+<div class="card" id="card-plenary">
+  <div class="card-header">
+    <div class="sec-badge badge-p">04</div>
+    <div>
+      <div class="card-title">Plenary — Exit Ticket</div>
+      <div class="card-sub">Two questions — submit once only</div>
+    </div>
+    <div class="lock-chip chip-locked" id="chip-plenary">🔒 Locked</div>
+  </div>
+  <div class="card-body" id="body-plenary">
+    <div class="locked-notice" id="ln-plenary">
+      <span class="ln-icon">🔒</span>
+      <span><strong>Waiting for your teacher</strong> to unlock this activity. Sit tight!</span>
+    </div>
+    <div id="cnt-plenary" style="display:none">
+      <div class="info-banner">✍️ Answer both questions. You can only submit once.</div>
+
+      <!-- Q1 — open ended -->
+      <div class="ple-q">
+        <label>Question 1 — What does <code style="color:var(--neon);background:rgba(6,255,165,0.08);padding:2px 7px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.88em">text-transform: uppercase</code> do? Explain in your own words.</label>
+        <textarea id="pleAns1" placeholder="Write your answer here…"></textarea>
+      </div>
+
+      <!-- Q2 — multiple choice -->
+      <div class="ple-q" style="margin-top:22px">
+        <label>Question 2 — Which text-transform value makes the <strong>first letter of every word</strong> a capital letter?</label>
+        <div class="opts" id="pq2">
+          <label class="opt"><input type="radio" name="pq2" value="a">uppercase</label>
+          <label class="opt"><input type="radio" name="pq2" value="b">lowercase</label>
+          <label class="opt"><input type="radio" name="pq2" value="c">capitalize</label>
+          <label class="opt"><input type="radio" name="pq2" value="d">none</label>
+        </div>
+      </div>
+
+      <div class="fb-box" id="fb-plenary"></div>
+      <div class="btn-row" id="btnrow-plenary">
+        <button class="btn btn-rose" onclick="submitPlenary()">✔ Submit Exit Ticket</button>
+      </div>
+      <div class="submitted-msg" id="done-plenary">✅ Exit ticket submitted! Great work today, you've completed the lesson. 🎉</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ============================================================ -->
+<!-- FIREBASE SDK v9 (modular — loaded as ES module)             -->
+<!-- This approach guarantees Firebase is ready before any code  -->
+<!-- that uses it runs. No timing / "not defined" errors.        -->
+<!-- ============================================================ -->
+<script type="module">
+// ============================================================
+//  ⚠️  STEP 1 — REPLACE THIS CONFIG with yours from Firebase
+//      Console → Project Settings → Your apps → Web app
+// ============================================================
+const firebaseConfig = {
+  apiKey:            "AIzaSyCNZgEyXl8h7T2JQNA7767svO22PIRuPPc",
+  authDomain:        "css-lesson-grade7.firebaseapp.com",
+  databaseURL:       "https://css-lesson-grade7-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "css-lesson-grade7",
+  storageBucket:     "css-lesson-grade7.firebasestorage.app",
+  messagingSenderId: "757327230884",
+  appId:             "1:757327230884:web:d403876b000490ed93f331"
+};
+// ============================================================
+
+import { initializeApp }                         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, get, remove }
+                                                  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ===== FIREBASE INIT =====
+let db;
+let firebaseReady = false;
+
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+  firebaseReady = true;
+  setConn('live', 'Connected to Firebase — real-time updates active');
+} catch(e) {
+  console.error('Firebase init failed:', e);
+  setConn('err', '⚠️ Firebase init failed — check your config values');
+}
+
+// Expose Firebase helpers to the global scope so the rest of
+// the (non-module) app functions can call them normally.
+window._fbReady = () => firebaseReady;
+window._fbRef   = (path)        => ref(db, path);
+window._fbSet   = (path, val)   => set(ref(db, path), val);
+window._fbPush  = (path, val)   => push(ref(db, path), val);
+window._fbGet   = (path)        => get(ref(db, path));
+window._fbOn    = (path, cb)    => onValue(ref(db, path), cb);
+window._fbRemove= (path)        => remove(ref(db, path));
+
+// Connection state listener
+try {
+  onValue(ref(db, '.info/connected'), snap => {
+    if (snap.val()) setConn('live', 'Connected to Firebase — real-time updates active');
+    else            setConn('err',  'Disconnected — waiting to reconnect…');
+  });
+} catch(e) { /* config not set yet */ }
+
+// Signal app that Firebase module has finished loading
+window._firebaseModuleLoaded = true;
+if (typeof window._onFirebaseReady === 'function') window._onFirebaseReady();
+</script>
+
+<script>
+// ===== FIREBASE BRIDGE =====
+// These wrappers let the main app talk to Firebase without
+// needing to be a module itself. They wait until the module
+// above signals it is ready.
+let firebaseReady = false;
+
+function fbReady()         { return window._fbReady ? window._fbReady() : false; }
+function fbSet(path, val)  { return window._fbSet   ? window._fbSet(path, val)  : Promise.reject('FB not ready'); }
+function fbPush(path, val) { return window._fbPush  ? window._fbPush(path, val) : Promise.reject('FB not ready'); }
+function fbGet(path)       { return window._fbGet   ? window._fbGet(path)       : Promise.reject('FB not ready'); }
+function fbOn(path, cb)    { if (window._fbOn) window._fbOn(path, cb); }
+function fbRemove(path)    { return window._fbRemove? window._fbRemove(path)    : Promise.reject('FB not ready'); }
+
+// Called by the module above once Firebase is initialised
+window._onFirebaseReady = function() {
+  firebaseReady = fbReady();
+};
+// In case the module already loaded before this script ran
+if (window._firebaseModuleLoaded) {
+  firebaseReady = fbReady();
+}
+
+// ===== APP STATE =====
+const TEACHER_PWD = 'teacher123'; // ← Change this to your preferred password
+let mode = null; // 'teacher' | 'student'
+let student = { name: '', cls: '' };
+let currentLocks = { starter: true, intro: true, main: true, plenary: true };
+let demoVal = 'none';
+let starterSubmitted = false;
+let plenarySubmitted = false;
+
+// Hero demo cycling
+const heroCycle = ['none','capitalize','uppercase','lowercase'];
+let heroCycleIdx = 0;
+function cycleHero() {
+  const el = document.getElementById('heroDemo');
+  const vals = { none:'welcome to work education', capitalize:'welcome to work education', uppercase:'welcome to work education', lowercase:'WELCOME TO WORK EDUCATION' };
+  const v = heroCycle[heroCycleIdx % heroCycle.length];
+  el.style.textTransform = v;
+  el.textContent = vals[v] || 'welcome to grade 7 ict';
+  el.classList.remove('pulse');
+  void el.offsetWidth;
+  el.classList.add('pulse');
+  heroCycleIdx++;
+}
+setInterval(cycleHero, 2800);
+cycleHero();
+
+// ===== CONNECTION STATUS =====
+function setConn(state, label) {
+  const dot  = document.getElementById('connDot');
+  const txt  = document.getElementById('connText');
+  if (!dot || !txt) return;
+  dot.className = 'conn-dot ' + (state === 'live' ? 'live' : state === 'err' ? 'err' : '');
+  txt.textContent = label;
+}
+
+// Initial state — module will update once it loads
+setConn('', 'Connecting to Firebase…');
+
+// ===== MODE SELECT =====
+function enterStudentMode() {
+  document.getElementById('modeSelect').style.display = 'none';
+  document.getElementById('loginCard').style.display  = 'block';
+}
+
+function openTeacherModal() {
+  document.getElementById('tPwd').value = '';
+  document.getElementById('pwdErr').textContent = '';
+  document.getElementById('teacherModal').classList.add('show');
+  setTimeout(() => document.getElementById('tPwd').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('teacherModal').classList.remove('show');
+}
+document.getElementById('teacherModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function checkPwd() {
+  const v = document.getElementById('tPwd').value;
+  if (v === TEACHER_PWD) {
+    closeModal();
+    activateTeacherMode();
+  } else {
+    document.getElementById('pwdErr').textContent = '⚠️ Incorrect password. Try again!';
+    document.getElementById('tPwd').value = '';
+    document.getElementById('tPwd').focus();
+  }
+}
+
+function activateTeacherMode() {
+  mode = 'teacher';
+  document.getElementById('modeSelect').style.display  = 'none';
+  document.getElementById('teacherPanel').style.display = 'block';
+  setModeChip('teacher');
+  listenLocks();
+  listenResponses();
+  toast('Teacher mode activated. Control panel is ready.', 'success');
+}
+
+// ===== STUDENT START =====
+function startStudent() {
+  const name = document.getElementById('stName').value.trim();
+  const cls  = document.getElementById('stClass').value.trim();
+  const div  = document.getElementById('stDiv').value.trim();
+  const err  = document.getElementById('loginErr');
+  if (!name) { err.textContent = '⚠️ Please enter your name!'; return; }
+  if (!cls)  { err.textContent = '⚠️ Please enter your class!'; return; }
+  if (!div)  { err.textContent = '⚠️ Please enter your division!'; return; }
+  student = { name, cls, div };
+  mode = 'student';
+  document.getElementById('loginCard').style.display    = 'none';
+  document.getElementById('progressSteps').style.display = 'flex';
+  setModeChip('student');
+  listenLocks();
+  toast(`Welcome, ${name}! Waiting for your teacher to unlock activities.`, 'info');
+}
+
+function setModeChip(m) {
+  const chip = document.getElementById('modeChip');
+  chip.style.display = 'inline-block';
+  if (m === 'teacher') { chip.textContent = '👩‍🏫 Teacher'; chip.className = 'conn-mode teacher'; }
+  else                 { chip.textContent = `🎒 ${student.name} · ${student.cls} · Div ${student.div}`; chip.className = 'conn-mode student'; }
+}
+
+// ===== FIREBASE LOCK LISTENER =====
+function listenLocks() {
+  if (!fbReady()) { toast('Firebase not configured — lock sync unavailable', 'error'); return; }
+  fbOn('lessonLocks', snap => {
+    const data = snap.val() || {};
+    const sections = ['starter','intro','main','plenary'];
+    sections.forEach(sec => {
+      const locked = data[sec] !== false;
+      const wasLocked = currentLocks[sec];
+      currentLocks[sec] = locked;
+      applyLockState(sec, locked, wasLocked);
+    });
+  });
+}
+
+function applyLockState(sec, locked, wasLocked) {
+  const ln   = document.getElementById('ln-' + sec);
+  const cnt  = document.getElementById('cnt-' + sec);
+  const chip = document.getElementById('chip-' + sec);
+  const ps   = document.getElementById('ps-' + sec);
+
+  if (locked) {
+    if (ln)  ln.style.display  = 'flex';
+    if (cnt) cnt.style.display = 'none';
+    if (chip) { chip.textContent = '🔒 Locked'; chip.className = 'lock-chip chip-locked'; }
+    if (ps) { ps.classList.remove('active','done'); }
+    // Teacher status chips
+    const cs = document.getElementById('cs-' + sec);
+    if (cs) { cs.textContent = 'LOCKED'; cs.className = 'ctrl-status'; }
+    document.getElementById('card-' + sec).classList.remove('unlocked');
+  } else {
+    if (ln)  ln.style.display  = 'none';
+    if (cnt) cnt.style.display = 'block';
+    if (chip) { chip.textContent = '🔓 Unlocked'; chip.className = 'lock-chip chip-unlocked'; }
+    document.getElementById('card-' + sec).classList.add('unlocked');
+    const cs = document.getElementById('cs-' + sec);
+    if (cs) { cs.textContent = 'LIVE'; cs.className = 'ctrl-status on'; }
+    // Animate on newly unlocked for students
+    if (wasLocked && mode === 'student') {
+      document.getElementById('card-' + sec).classList.add('just-unlocked');
+      setTimeout(() => document.getElementById('card-' + sec).classList.remove('just-unlocked'), 1000);
+      toast(`🔓 "${sec.charAt(0).toUpperCase()+sec.slice(1)}" has been unlocked by your teacher!`, 'success');
+      document.getElementById('card-' + sec).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    if (ps) ps.classList.add('active');
+  }
+}
+
+// ===== TEACHER LOCK CONTROLS =====
+function setLock(sec, locked) {
+  if (!fbReady()) { toast('Firebase not configured', 'error'); return; }
+  fbSet('lessonLocks/' + sec, locked)
+    .then(() => toast(locked ? `🔒 ${sec} locked` : `🔓 ${sec} unlocked`, 'success'))
+    .catch(e => toast('Firebase error: ' + e.message, 'error'));
+}
+
+// ===== STARTER SUBMIT =====
+function submitStarter() {
+  if (starterSubmitted) return;
+  const a1 = document.querySelector('input[name="sq1"]:checked');
+  const a2 = document.querySelector('input[name="sq2"]:checked');
+  if (!a1 || !a2) { alert('⚠️ Please answer both questions!'); return; }
+
+  let score = 0;
+  markOpt('sq1', a1.value, 'b');
+  markOpt('sq2', a2.value, 'b');
+  if (a1.value === 'b') score++;
+  if (a2.value === 'b') score++;
+
+  // Disable inputs
+  document.querySelectorAll('#cnt-starter input').forEach(r => r.disabled = true);
+  document.getElementById('btnrow-starter').style.display = 'none';
+
+  const fb = document.getElementById('fb-starter');
+  const msgs = [
+    { c: 'fb-box show fb-fail', t: '📚 0/2 — Review the highlighted answers and ask your teacher for help.' },
+    { c: 'fb-box show fb-fail', t: `👍 1/2 — Good try! One answer was wrong — the correct answers are highlighted.` },
+    { c: 'fb-box show fb-pass', t: '🎉 2/2 Perfect! Great prior knowledge!' }
+  ];
+  fb.className = msgs[score].c;
+  fb.textContent = msgs[score].t;
+
+  const spb = document.getElementById('spb-starter');
+  spb.style.display = 'flex';
+  document.getElementById('spb-starter-num').textContent = score + '/2';
+  document.getElementById('spb-starter-num').style.color = score === 2 ? 'var(--neon)' : score === 1 ? 'var(--amber)' : 'var(--rose)';
+  document.getElementById('spb-starter-msg').textContent = ['Keep practising!','Almost there!','Full marks!'][score];
+
+  document.getElementById('done-starter').classList.add('show');
+  starterSubmitted = true;
+  markProgress('starter');
+
+  // Save to Firebase
+  saveResponse('starterResponses', {
+    name: student.name, cls: student.cls, div: student.div,
+    q1: a1.value, q2: a2.value, score,
+    time: new Date().toLocaleString('en-GB')
+  });
+}
+
+function markOpt(groupId, chosen, correct) {
+  document.querySelectorAll(`#${groupId} .opt`).forEach(label => {
+    const r = label.querySelector('input');
+    if (r.value === correct) label.classList.add('correct');
+    else if (r.value === chosen && chosen !== correct) label.classList.add('wrong');
+  });
+}
+
+// ===== PLENARY SUBMIT =====
+function submitPlenary() {
+  if (plenarySubmitted) return;
+  const a1 = document.getElementById('pleAns1').value.trim();
+  const a2 = document.querySelector('input[name="pq2"]:checked');
+  if (!a1) { alert('⚠️ Please write your answer to Question 1!'); return; }
+  if (!a2) { alert('⚠️ Please choose an answer for Question 2!'); return; }
+
+  // Mark Q2
+  markOpt('pq2', a2.value, 'c'); // capitalize is correct
+  document.querySelectorAll('#cnt-plenary input, #cnt-plenary textarea').forEach(r => r.disabled = true);
+  document.getElementById('btnrow-plenary').style.display = 'none';
+
+  const fb = document.getElementById('fb-plenary');
+  const q2correct = a2.value === 'c';
+  fb.className = 'fb-box show ' + (q2correct ? 'fb-pass' : 'fb-info');
+  fb.textContent = q2correct
+    ? '✅ Correct for Q2! "capitalize" makes the first letter of each word capital. Great answer!'
+    : '💡 Q2: The correct answer is "capitalize" — it capitalises the first letter of every word.';
+
+  document.getElementById('done-plenary').classList.add('show');
+  plenarySubmitted = true;
+  markProgress('plenary');
+
+  saveResponse('plenaryResponses', {
+    name: student.name, cls: student.cls, div: student.div,
+    ans1: a1, q2: a2.value, q2correct,
+    time: new Date().toLocaleString('en-GB')
+  });
+}
+
+// ===== SAVE TO FIREBASE =====
+function saveResponse(path, data) {
+  if (!fbReady()) return;
+  fbPush(path, data).catch(e => console.error('Save error:', e));
+}
+
+// ===== TEACHER: LISTEN RESPONSES =====
+function listenResponses() {
+  if (!fbReady()) return;
+  fbOn('starterResponses', snap => renderTable('tbl-starter', snap, 'starter'));
+  fbOn('plenaryResponses', snap => renderTable('tbl-plenary', snap, 'plenary'));
+}
+
+function renderTable(tblId, snap, type) {
+  const tbl = document.getElementById(tblId);
+  const data = snap.val();
+  if (!data) { tbl.innerHTML = '<tr><td class="no-data">No responses yet.</td></tr>'; return; }
+  const rows = Object.values(data);
+
+  if (type === 'starter') {
+    let h = '<tr><th>#</th><th>Name</th><th>Class</th><th>Division</th><th>Q1</th><th>Q2</th><th>Score</th><th>Time</th></tr>';
+    rows.forEach((r,i) => {
+      const sc = r.score;
+      const cls = sc===2?'sc-good':sc===1?'sc-ok':'sc-low';
+      h += `<tr><td>${i+1}</td><td><strong>${esc(r.name)}</strong></td><td>${esc(r.cls)}</td><td>${esc(r.div||'—')}</td><td>${r.q1.toUpperCase()}</td><td>${r.q2.toUpperCase()}</td><td><span class="sc-badge ${cls}">${sc}/2</span></td><td>${esc(r.time)}</td></tr>`;
+    });
+    tbl.innerHTML = h;
+  } else {
+    let h = '<tr><th>#</th><th>Name</th><th>Class</th><th>Division</th><th>Q1 Answer</th><th>Q2 (MC)</th><th>Q2 Correct?</th><th>Time</th></tr>';
+    rows.forEach((r,i) => {
+      h += `<tr><td>${i+1}</td><td><strong>${esc(r.name)}</strong></td><td>${esc(r.cls)}</td><td>${esc(r.div||'—')}</td><td style="max-width:200px;word-break:break-word">${esc(r.ans1)}</td><td>${r.q2?r.q2.toUpperCase():'—'}</td><td>${r.q2correct?'<span class="sc-badge sc-good">✓ Yes</span>':'<span class="sc-badge sc-low">✗ No</span>'}</td><td>${esc(r.time)}</td></tr>`;
+    });
+    tbl.innerHTML = h;
+  }
+}
+
+function exportCSV() {
+  if (!fbReady()) { toast('Firebase not connected', 'error'); return; }
+  Promise.all([
+    fbGet('starterResponses'),
+    fbGet('plenaryResponses')
+  ]).then(([sSnap, pSnap]) => {
+    let csv = 'Section,Name,Class,Division,Q1,Q2,Score/Notes,Time\n';
+    const sd = sSnap.val() || {};
+    const pd = pSnap.val() || {};
+    Object.values(sd).forEach(r => {
+      csv += `Starter,"${r.name}","${r.cls}","${r.div||''}","${r.q1}","${r.q2}","${r.score}/2","${r.time}"\n`;
+    });
+    Object.values(pd).forEach(r => {
+      csv += `Plenary,"${r.name}","${r.cls}","${r.div||''}","${(r.ans1||'').replace(/"/g,"'")}","${r.q2||''}","Q2 Correct: ${r.q2correct}","${r.time}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'css_lesson_responses.csv';
+    a.click();
+    toast('CSV exported!', 'success');
+  });
+}
+
+function clearResponses() {
+  if (!confirm('⚠️ Delete ALL student responses from Firebase? This cannot be undone.')) return;
+  fbRemove('starterResponses');
+  fbRemove('plenaryResponses');
+  toast('All responses cleared.', 'info');
+}
+
+// ===== PROGRESS TRACKER =====
+function markProgress(sec) {
+  const ps = document.getElementById('ps-' + sec);
+  if (ps) { ps.classList.remove('active'); ps.classList.add('done'); }
+}
+
+// ===== LIVE DEMO (Intro) =====
+function setDemo(val, el) {
+  demoVal = val;
+  document.querySelectorAll('.pill-row .pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  updateDemo();
+}
+function updateDemo() {
+  const txt = document.getElementById('demoIn').value || 'Type something above!';
+  const out = document.getElementById('demoOut');
+  out.style.textTransform = demoVal;
+  out.textContent = txt;
+}
+
+// ===== TOASTS =====
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4200);
+}
+
+// ===== UTILITY =====
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
